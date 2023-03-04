@@ -1,0 +1,8 @@
+
+# Build artifacts
+zig-cache/
+zig-out/
+
+# Miscellaneous
+.DS_Store
+
