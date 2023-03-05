@@ -24,9 +24,9 @@ pub fn main() !void {
     const command = args[1];
 
     if (std.mem.eql(u8, command, "help"))     { help(); }
-    else if (std.mem.eql(u8, command, "md5")) { std.debug.print("md5\n", .{}); }
-    else if (std.mem.eql(u8, command, "e64")) { std.debug.print("e64\n", .{}); }
-    else if (std.mem.eql(u8, command, "b64")) { std.debug.print("b64\n", .{}); }
+    else if (std.mem.eql(u8, command, "md5")) { try @import("md5.zig").command(allocator); }
+    else if (std.mem.eql(u8, command, "e64")) { std.debug.print("TODO: e64\n", .{}); }
+    else if (std.mem.eql(u8, command, "b64")) { std.debug.print("TODO: b64\n", .{}); }
     else std.debug.print("error: {s}: command not found\n", .{ command });
 }
 
