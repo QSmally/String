@@ -3,6 +3,9 @@
 zig-cache/
 zig-out/
 
+# Editor
+Session.vim
+
 # Miscellaneous
 .DS_Store
 
