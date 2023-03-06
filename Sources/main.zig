@@ -25,8 +25,8 @@ pub fn main() !void {
 
     if (std.mem.eql(u8, command, "help"))     { help(); }
     else if (std.mem.eql(u8, command, "md5")) { try @import("md5.zig").command(allocator); }
-    else if (std.mem.eql(u8, command, "e64")) { std.debug.print("TODO: e64\n", .{}); }
-    else if (std.mem.eql(u8, command, "b64")) { std.debug.print("TODO: b64\n", .{}); }
+    else if (std.mem.eql(u8, command, "e64")) { try @import("e64.zig").command(allocator); }
+    else if (std.mem.eql(u8, command, "d64")) { try @import("d64.zig").command(allocator); }
     else std.debug.print("error: {s}: command not found\n", .{ command });
 }
 
