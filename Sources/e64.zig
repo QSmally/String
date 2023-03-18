@@ -8,3 +8,9 @@ pub fn perform(allocator: std.mem.Allocator, batch: []const u8) ![]u8 {
     _ = B64.Encoder.encode(output, batch);
     return output;
 }
+
+test "e64" {
+    const result = try perform(std.testing.allocator, "foo");
+    try std.testing.expectEqualStrings("Zm9v", result);
+    std.testing.allocator.free(result);
+}
