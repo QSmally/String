@@ -45,7 +45,6 @@ fn help() void {
 fn perform(comptime command: fn (std.mem.Allocator, []const u8) anyerror![]u8) !void {
     while (try stdin.readUntilDelimiterOrEofAlloc(allocator, '\n', 1024)) |batch| {
         const output = try command(allocator, batch);
-        // TODO: std.fmt.fmtSliceHexLower(output)
         try stdout.print("{s}\n", .{ output });
         allocator.free(batch);
         allocator.free(output);
