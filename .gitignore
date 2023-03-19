@@ -5,6 +5,7 @@ zig-out/
 
 # Editor
 Session.vim
+*.swp
 
 # Miscellaneous
 .DS_Store
