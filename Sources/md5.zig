@@ -6,10 +6,7 @@ const Md5 = std.crypto.hash.Md5;
 pub fn perform(allocator: std.mem.Allocator, batch: []const u8) ![]u8 {
     var result: [Md5.digest_length]u8 = undefined;
     Md5.hash(batch, &result, .{});
-
-    var output = try allocator.alloc(u8, 32);
-    _ = try std.fmt.bufPrint(output, "{}", .{ std.fmt.fmtSliceHexLower(&result) });
-    return output;
+    return try std.fmt.allocPrint(allocator, "{}", .{ std.fmt.fmtSliceHexLower(&result) });
 }
 
 test "md5" {
