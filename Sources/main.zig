@@ -32,9 +32,9 @@ pub fn main() !void {
     const command = args[1];
 
     if (std.mem.eql(u8, command, "help"))     { help(); }
-    else if (std.mem.eql(u8, command, "md5")) { try perform(@import("md5.zig").perform); }
-    else if (std.mem.eql(u8, command, "e64")) { try perform(@import("e64.zig").perform); }
-    else if (std.mem.eql(u8, command, "d64")) { try perform(@import("d64.zig").perform); }
+    else if (std.mem.eql(u8, command, "md5")) { try perform(@import("md5.zig").perform, args); }
+    else if (std.mem.eql(u8, command, "e64")) { try perform(@import("e64.zig").perform, args); }
+    else if (std.mem.eql(u8, command, "d64")) { try perform(@import("d64.zig").perform, args); }
     else std.debug.print("error: {s}: command not found\n", .{ command });
 }
 
@@ -42,7 +42,13 @@ fn help() void {
     for (usage) |line| std.debug.print("{s}\n", .{ line });
 }
 
-fn perform(comptime command: fn (std.mem.Allocator, []const u8) anyerror![]u8) !void {
+fn perform(comptime command: fn (std.mem.Allocator, []const u8) anyerror![]u8, args: [][]const u8) !void {
+    if (args.len > 2) {
+        const output = try command(allocator, args[2]);
+        try stdout.print("{s}\n", .{ output });
+        return allocator.free(output);
+    }
+
     while (try stdin.readUntilDelimiterOrEofAlloc(allocator, '\n', 1024)) |batch| {
         const output = try command(allocator, batch);
         try stdout.print("{s}\n", .{ output });
