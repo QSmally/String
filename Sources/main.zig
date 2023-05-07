@@ -1,17 +1,6 @@
 
 const std = @import("std");
 
-const usage = [_][]const u8 {
-    "string - a tool to easily perform actions on strings.\n",
-    "USAGE",
-    "  string <operation> <string>",
-    "  source | string <operation>",
-    "  source | string <operation> | destination\n",
-    "OPERATIONS",
-    "  md5: generate an md5 hash",
-    "  e64: encode into a base-64 string",
-    "  d64: decode from a base-64 string" };
-
 const stdin = std.io
     .getStdIn()
     .reader();
@@ -32,25 +21,39 @@ pub fn main() !void {
     const command = args[1];
 
     if (std.mem.eql(u8, command, "help"))     { help(); }
-    else if (std.mem.eql(u8, command, "md5")) { try perform(@import("md5.zig").perform, args); }
-    else if (std.mem.eql(u8, command, "e64")) { try perform(@import("e64.zig").perform, args); }
-    else if (std.mem.eql(u8, command, "d64")) { try perform(@import("d64.zig").perform, args); }
+    else if (std.mem.eql(u8, command, "md5")) { try perform(@import("md5.zig"), args); }
+    else if (std.mem.eql(u8, command, "e64")) { try perform(@import("e64.zig"), args); }
+    else if (std.mem.eql(u8, command, "d64")) { try perform(@import("d64.zig"), args); }
     else std.debug.print("error: {s}: command not found\n", .{ command });
 }
 
 fn help() void {
-    for (usage) |line| std.debug.print("{s}\n", .{ line });
+    const message =
+        \\ string - a tool to easily perform actions on strings.
+        \\
+        \\ USAGE
+        \\  string <operation> <string>
+        \\  source | string <operation>
+        \\  source | string <operation> | destination
+        \\
+        \\OPERATIONS
+        \\  md5: generate an md5 hash
+        \\  e64: encode into a base-64 string
+        \\  d64: decode from a base-64 string
+    ;
+
+    std.debug.print("{s}\n", .{ message });
 }
 
-fn perform(comptime command: fn (std.mem.Allocator, []const u8) anyerror![]u8, args: [][]const u8) !void {
+fn perform(comptime command: anytype, args: [][]const u8) !void {
     if (args.len > 2) {
-        const output = try command(allocator, args[2]);
+        const output = try command.perform(allocator, args[2]);
         try stdout.print("{s}\n", .{ output });
         return allocator.free(output);
     }
 
     while (try stdin.readUntilDelimiterOrEofAlloc(allocator, '\n', 1024)) |batch| {
-        const output = try command(allocator, batch);
+        const output = try command.perform(allocator, batch);
         try stdout.print("{s}\n", .{ output });
         allocator.free(batch);
         allocator.free(output);
