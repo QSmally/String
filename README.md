@@ -3,7 +3,7 @@
 
 > A tool to easily perform actions on strings.
 
-Commit HEAD compiled with Zig `0.10.1`.
+Commit HEAD compiled with Zig `0.11.0`.
 
 ## Commands
 

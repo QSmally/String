@@ -1,29 +1,32 @@
 
 const std = @import("std");
 
-pub fn build(b: *std.build.Builder) void {
+pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    const mode = b.standardReleaseOptions();
+    const optimisation = b.standardOptimizeOption(.{});
 
-    const executable = b.addExecutable("String", "Sources/main.zig");
-    executable.setTarget(target);
-    executable.setBuildMode(mode);
-    executable.install();
+    const executable = b.addExecutable(.{
+        .name = "TestZig",
+        .root_source_file = .{ .path = "Sources/main.zig" },
+        .target = target,
+        .optimize = optimisation });
+    b.installArtifact(executable);
 
-    const runc = executable.run();
+    // Command
+    const runc = b.addRunArtifact(executable);
     runc.step.dependOn(b.getInstallStep());
-
-    if (b.args) |args| {
-        runc.addArgs(args);
-    }
+    if (b.args) |args| runc.addArgs(args);
 
     const runs = b.step("run", "Locally execute String");
     runs.dependOn(&runc.step);
 
-    const testc = b.addTest("Sources/main.zig");
-    testc.setTarget(target);
-    testc.setBuildMode(mode);
+    // Tests
+    const unit_tests = b.addTest(.{
+        .root_source_file = .{ .path = "src/main.zig" },
+        .target = target,
+        .optimize = optimisation });
+    const testc = b.addRunArtifact(unit_tests);
 
-    const tests = b.step("test", "Test individual command components");
+    const tests = b.step("test", "Run unit tests");
     tests.dependOn(&testc.step);
 }
