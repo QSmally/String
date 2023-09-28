@@ -6,7 +6,7 @@ pub fn build(b: *std.Build) void {
     const optimisation = b.standardOptimizeOption(.{});
 
     const executable = b.addExecutable(.{
-        .name = "TestZig",
+        .name = "string",
         .root_source_file = .{ .path = "Sources/main.zig" },
         .target = target,
         .optimize = optimisation });
@@ -27,6 +27,6 @@ pub fn build(b: *std.Build) void {
         .optimize = optimisation });
     const testc = b.addRunArtifact(unit_tests);
 
-    const tests = b.step("test", "Run unit tests");
+    const tests = b.step("test", "Test individual command components");
     tests.dependOn(&testc.step);
 }
